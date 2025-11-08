@@ -24,4 +24,12 @@ public interface ContractRepository extends JpaRepository<Contract, Long>, JpaSp
             "left join fetch c.tenant t " +
             "where c.id = :id")
     Optional<Contract> findByIdWithRelations(@Param("id") Long id);
+
+    @Query("select c from Contract c " +
+            "join fetch c.tenant t " +
+            "where c.house.id = :houseId " +
+            "and c.status = 'ACTIVE' " +
+            "and CURRENT_DATE between c.startDate and c.endDate " +
+            "order by c.startDate desc")
+    Optional<Contract> findActiveContractByHouseId(@Param("houseId") Long houseId);
 }

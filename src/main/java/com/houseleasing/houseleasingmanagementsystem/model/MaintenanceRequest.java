@@ -1,10 +1,12 @@
 package com.houseleasing.houseleasingmanagementsystem.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.houseleasing.houseleasingmanagementsystem.model.enums.MaintenanceStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.Hibernate;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -21,13 +23,11 @@ public class MaintenanceRequest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "house_id")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY) // 允许请求写入，响应不直接输出
     private House house;             // 房源
 
-    @ManyToOne
-    @JoinColumn(name = "tenant_id")
-    private User tenant;             // 申请人
 
     @Column(length = 1000)
     private String description;      // 问题描述
@@ -41,5 +41,18 @@ public class MaintenanceRequest {
     private LocalDateTime createdAt;
 
     private LocalDateTime completedAt; // 完成时间
+
+    // 仅用于序列化输出的便捷字段
+    @Transient
+    @JsonProperty("houseId")
+    public Long getHouseId() {
+        return (house != null && Hibernate.isInitialized(house)) ? house.getId() : null;
+    }
+
+    @Transient
+    @JsonProperty("houseAddress")
+    public String getHouseAddress() {
+        return (house != null && Hibernate.isInitialized(house)) ? house.getAddress() : null;
+    }
 }
 
