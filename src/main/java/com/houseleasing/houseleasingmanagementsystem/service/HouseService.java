@@ -13,8 +13,14 @@ public interface HouseService {
     House createHouse(House house);
     House updateHouse(Long id, House house);
     void deleteHouse(Long id);
-    Page<House> searchHouses(String address, String houseType, Double minRent, Double maxRent, HouseStatus status, Pageable pageable);
+
+    Page<House> searchHouses(String address, String houseType, Double minArea, Double maxArea,
+                             Double minRent, Double maxRent, String decoration, String facilities,
+                             HouseStatus status, Boolean recommended, Long landlordId, String landlordName,
+                             Pageable pageable);
+
+    List<House> findByRentBetween(Double minRent, Double maxRent); // 租金范围查询
+
     List<House> getRecommendedHouses();
     House toggleRecommendation(Long id);
 }
-

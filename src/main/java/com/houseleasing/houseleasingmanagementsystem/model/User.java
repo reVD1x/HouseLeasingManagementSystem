@@ -1,6 +1,5 @@
 package com.houseleasing.houseleasingmanagementsystem.model;
 
-import com.houseleasing.houseleasingmanagementsystem.model.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,21 +20,15 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true, nullable = false)
-    private String username;         // 用户名
-
-    @Column(nullable = false)
-    private String password;         // 密码
-
     private String realName;         // 真实姓名
 
+    @Column(unique = true, nullable = false)
     private String idCard;           // 身份证号
 
     private String phone;            // 联系方式
 
-    @Enumerated(EnumType.STRING)
-    private UserRole role;           // 角色(管理员、用户)
 
     @CreatedDate
     private LocalDateTime createdAt;
 }
+

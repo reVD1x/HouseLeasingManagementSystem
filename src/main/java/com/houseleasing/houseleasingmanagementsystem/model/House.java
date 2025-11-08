@@ -8,6 +8,8 @@ import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.time.LocalDateTime;
 
@@ -47,6 +49,7 @@ public class House {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "landlord_id")
+    @JsonIgnore // 避免序列化触发懒加载
     private User landlord;           // 房东
 
     @CreatedDate
@@ -54,4 +57,17 @@ public class House {
 
     @LastModifiedDate
     private LocalDateTime updatedAt;
+
+    // 在不暴露整个landlord对象的情况下，提供可序列化的房东信息
+    @Transient
+    @JsonProperty("landlordId")
+    public Long getLandlordId() {
+        return landlord != null ? landlord.getId() : null;
+    }
+
+    @Transient
+    @JsonProperty("landlordName")
+    public String getLandlordName() {
+        return landlord != null ? landlord.getRealName() : null;
+    }
 }
