@@ -2,6 +2,7 @@ package com.houseleasing.houseleasingmanagementsystem.model;
 
 import com.houseleasing.houseleasingmanagementsystem.model.enums.ContractStatus;
 import com.houseleasing.houseleasingmanagementsystem.model.enums.PaymentMethod;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -26,16 +27,19 @@ public class Contract {
     @Column(unique = true, nullable = false)
     private String contractNo;       // 合同编号
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "house_id")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY) // 允许请求写入，响应不直接输出
     private House house;             // 房源
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tenant_id")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private User tenant;             // 租客
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "landlord_id")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private User landlord;           // 房东
 
     @Column(nullable = false)
@@ -58,5 +62,29 @@ public class Contract {
 
     @CreatedDate
     private LocalDateTime signedAt;  // 签订时间
-}
 
+    // 仅用于序列化输出的便捷字段
+    @Transient
+    @JsonProperty("houseId")
+    public Long getHouseId() { return house != null ? house.getId() : null; }
+
+    @Transient
+    @JsonProperty("houseAddress")
+    public String getHouseAddress() { return house != null ? house.getAddress() : null; }
+
+    @Transient
+    @JsonProperty("tenantId")
+    public Long getTenantId() { return tenant != null ? tenant.getId() : null; }
+
+    @Transient
+    @JsonProperty("tenantName")
+    public String getTenantName() { return tenant != null ? tenant.getRealName() : null; }
+
+    @Transient
+    @JsonProperty("landlordId")
+    public Long getLandlordId() { return landlord != null ? landlord.getId() : null; }
+
+    @Transient
+    @JsonProperty("landlordName")
+    public String getLandlordName() { return landlord != null ? landlord.getRealName() : null; }
+}
