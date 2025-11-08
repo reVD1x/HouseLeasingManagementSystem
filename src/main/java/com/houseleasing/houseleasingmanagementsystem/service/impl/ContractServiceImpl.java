@@ -79,7 +79,7 @@ public class ContractServiceImpl implements ContractService {
                                           LocalDate endDateTo,
                                           Pageable pageable) {
         Specification<Contract> spec = (root, query, cb) -> {
-            if (Contract.class.equals(query.getResultType())) {
+            if (query != null && Contract.class.equals(query.getResultType())) {
                 root.fetch("house", JoinType.LEFT);
                 root.fetch("landlord", JoinType.LEFT);
                 root.fetch("tenant", JoinType.LEFT);

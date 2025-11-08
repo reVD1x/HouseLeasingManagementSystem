@@ -15,6 +15,7 @@ import java.util.Optional;
 @Repository
 public interface ContractRepository extends JpaRepository<Contract, Long>, JpaSpecificationExecutor<Contract> {
     Page<Contract> findAllByStatus(ContractStatus status, Pageable pageable);
+
     Contract findByContractNo(String contractNo);
 
     @Query("select c from Contract c " +

@@ -31,8 +31,9 @@ public class UserController {
 
     // 分页获取所有用户
     @GetMapping
-    public ResponseEntity<Page<User>> getAllUsers(@RequestParam(defaultValue = "0") int page,
-                                                  @RequestParam(defaultValue = "10") int size) {
+    public ResponseEntity<Page<User>> getAllUsers(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<User> users = userService.getAllUsers(pageable);
         return ResponseEntity.ok(users);

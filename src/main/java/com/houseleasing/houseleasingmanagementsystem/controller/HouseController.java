@@ -57,14 +57,10 @@ public class HouseController {
             @RequestParam(required = false) String landlordName,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-
         Pageable pageable = PageRequest.of(page, size);
-        Page<House> houses = houseService.searchHouses(address, houseType, minArea, maxArea,
-                minRent, maxRent, decoration, facilities,
-                status, recommended, landlordId, landlordName, pageable);
+        Page<House> houses = houseService.searchHouses(address, houseType, minArea, maxArea, minRent, maxRent, decoration, facilities, status, recommended, landlordId, landlordName, pageable);
         return ResponseEntity.ok(houses);
     }
-
 
 
     // 根据ID获取房源

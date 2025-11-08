@@ -4,8 +4,13 @@ import com.houseleasing.houseleasingmanagementsystem.model.enums.HouseStatus;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import lombok.Getter;
+import lombok.Setter;
 
+@Setter
+@Getter
 public class HouseDTO {
+    // Getters and Setters
     private Long id;
 
     @NotBlank(message = "房屋地址不能为空")
@@ -30,94 +35,6 @@ public class HouseDTO {
     private Boolean recommended;
     private Long landlordId;
 
-    // Getters and Setters
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getHouseType() {
-        return houseType;
-    }
-
-    public void setHouseType(String houseType) {
-        this.houseType = houseType;
-    }
-
-    public Double getArea() {
-        return area;
-    }
-
-    public void setArea(Double area) {
-        this.area = area;
-    }
-
-    public Double getRent() {
-        return rent;
-    }
-
-    public void setRent(Double rent) {
-        this.rent = rent;
-    }
-
-    public String getDecoration() {
-        return decoration;
-    }
-
-    public void setDecoration(String decoration) {
-        this.decoration = decoration;
-    }
-
-    public String getFacilities() {
-        return facilities;
-    }
-
-    public void setFacilities(String facilities) {
-        this.facilities = facilities;
-    }
-
-    public HouseStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(HouseStatus status) {
-        this.status = status;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Boolean getRecommended() {
-        return recommended;
-    }
-
-    public void setRecommended(Boolean recommended) {
-        this.recommended = recommended;
-    }
-
-    public Long getLandlordId() {
-        return landlordId;
-    }
-
-    public void setLandlordId(Long landlordId) {
-        this.landlordId = landlordId;
-    }
 }
 
 

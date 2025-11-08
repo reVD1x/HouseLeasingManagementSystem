@@ -75,7 +75,7 @@ public class HouseServiceImpl implements HouseService {
 
         Specification<House> spec = (root, query, cb) -> {
             // Ensure fetch join only applied to root queries (not count query)
-            if (House.class.equals(query.getResultType())) {
+            if (query != null && House.class.equals(query.getResultType())) {
                 root.fetch("landlord", JoinType.LEFT);
             }
             List<Predicate> predicates = new ArrayList<>();
