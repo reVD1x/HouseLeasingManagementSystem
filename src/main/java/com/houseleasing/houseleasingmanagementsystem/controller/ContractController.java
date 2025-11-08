@@ -32,9 +32,11 @@ public class ContractController {
 
     // 生成合同模板所需数据：根据传入 houseId/landlordId/tenantId 可返回基础信息（前端自行渲染模板）
     @GetMapping("/template-data")
-    public ResponseEntity<Contract> getTemplateData(@RequestParam Long houseId,
-                                                    @RequestParam Long landlordId,
-                                                    @RequestParam Long tenantId) {
+    public ResponseEntity<Contract> getTemplateData(
+            @RequestParam Long houseId,
+            @RequestParam Long landlordId,
+            @RequestParam Long tenantId
+    ) {
         House house = houseService.getHouseById(houseId);
         User landlord = userService.getUserById(landlordId);
         User tenant = userService.getUserById(tenantId);
@@ -109,17 +111,19 @@ public class ContractController {
 
     // 合同查询（分页）
     @GetMapping("/search")
-    public ResponseEntity<Page<Contract>> search(@RequestParam(required = false) String contractNo,
-                                                 @RequestParam(required = false) Long houseId,
-                                                 @RequestParam(required = false) Long landlordId,
-                                                 @RequestParam(required = false) Long tenantId,
-                                                 @RequestParam(required = false) ContractStatus status,
-                                                 @RequestParam(required = false) LocalDate startDateFrom,
-                                                 @RequestParam(required = false) LocalDate startDateTo,
-                                                 @RequestParam(required = false) LocalDate endDateFrom,
-                                                 @RequestParam(required = false) LocalDate endDateTo,
-                                                 @RequestParam(defaultValue = "0") int page,
-                                                 @RequestParam(defaultValue = "10") int size) {
+    public ResponseEntity<Page<Contract>> search(
+            @RequestParam(required = false) String contractNo,
+            @RequestParam(required = false) Long houseId,
+            @RequestParam(required = false) Long landlordId,
+            @RequestParam(required = false) Long tenantId,
+            @RequestParam(required = false) ContractStatus status,
+            @RequestParam(required = false) LocalDate startDateFrom,
+            @RequestParam(required = false) LocalDate startDateTo,
+            @RequestParam(required = false) LocalDate endDateFrom,
+            @RequestParam(required = false) LocalDate endDateTo,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Contract> res = contractService.searchContracts(contractNo, houseId, landlordId, tenantId,
                 status, startDateFrom, startDateTo, endDateFrom, endDateTo, pageable);
