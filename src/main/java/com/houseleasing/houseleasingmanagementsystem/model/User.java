@@ -27,8 +27,6 @@ public class User {
 
     private String phone;            // 联系方式
 
-
     @CreatedDate
     private LocalDateTime createdAt;
 }
-
