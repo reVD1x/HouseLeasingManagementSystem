@@ -2,11 +2,13 @@ package com.houseleasing.houseleasingmanagementsystem.model;
 
 import com.houseleasing.houseleasingmanagementsystem.model.enums.ContractStatus;
 import com.houseleasing.houseleasingmanagementsystem.model.enums.PaymentMethod;
+import com.houseleasing.houseleasingmanagementsystem.model.enums.PaymentCycle;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.Hibernate;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -52,7 +54,12 @@ public class Contract {
     private Double rentAmount;       // 租金金额
 
     @Enumerated(EnumType.STRING)
-    private PaymentMethod paymentMethod; // 支付方式
+    @Column(length = 32)
+    private PaymentCycle paymentCycle;   // 支付周期（频率）
+
+    @Enumerated(EnumType.STRING)
+    @Column(length = 32)
+    private PaymentMethod paymentMethod; // 支付方式（渠道）
 
     @Column(length = 2000)
     private String breachClause;     // 违约条款
@@ -66,25 +73,25 @@ public class Contract {
     // 仅用于序列化输出的便捷字段
     @Transient
     @JsonProperty("houseId")
-    public Long getHouseId() { return house != null ? house.getId() : null; }
+    public Long getHouseId() { return (house != null && Hibernate.isInitialized(house)) ? house.getId() : null; }
 
     @Transient
     @JsonProperty("houseAddress")
-    public String getHouseAddress() { return house != null ? house.getAddress() : null; }
+    public String getHouseAddress() { return (house != null && Hibernate.isInitialized(house)) ? house.getAddress() : null; }
 
     @Transient
     @JsonProperty("tenantId")
-    public Long getTenantId() { return tenant != null ? tenant.getId() : null; }
+    public Long getTenantId() { return (tenant != null && Hibernate.isInitialized(tenant)) ? tenant.getId() : null; }
 
     @Transient
     @JsonProperty("tenantName")
-    public String getTenantName() { return tenant != null ? tenant.getRealName() : null; }
+    public String getTenantName() { return (tenant != null && Hibernate.isInitialized(tenant)) ? tenant.getRealName() : null; }
 
     @Transient
     @JsonProperty("landlordId")
-    public Long getLandlordId() { return landlord != null ? landlord.getId() : null; }
+    public Long getLandlordId() { return (landlord != null && Hibernate.isInitialized(landlord)) ? landlord.getId() : null; }
 
     @Transient
     @JsonProperty("landlordName")
-    public String getLandlordName() { return landlord != null ? landlord.getRealName() : null; }
+    public String getLandlordName() { return (landlord != null && Hibernate.isInitialized(landlord)) ? landlord.getRealName() : null; }
 }

@@ -4,6 +4,7 @@ import com.houseleasing.houseleasingmanagementsystem.model.Contract;
 import com.houseleasing.houseleasingmanagementsystem.model.enums.ContractStatus;
 import com.houseleasing.houseleasingmanagementsystem.repository.ContractRepository;
 import com.houseleasing.houseleasingmanagementsystem.service.ContractService;
+import com.houseleasing.houseleasingmanagementsystem.service.RentPaymentService;
 import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,13 +24,17 @@ public class ContractServiceImpl implements ContractService {
     @Autowired
     private ContractRepository contractRepository;
 
+    @Autowired
+    private RentPaymentService rentPaymentService;
+
     @Override
     public Contract createContract(Contract contract) {
         if (contract.getStatus() == null) {
             contract.setStatus(ContractStatus.DRAFT);
         }
         Contract saved = contractRepository.save(contract);
-        // Reload with fetch joins to return initialized relations
+        // 生成租金计划，第一期设为已付款（根据你的描述）
+        rentPaymentService.generateScheduleForContract(saved, true);
         return getContractById(saved.getId());
     }
 
@@ -44,6 +49,7 @@ public class ContractServiceImpl implements ContractService {
         c.setStartDate(contractDetails.getStartDate());
         c.setEndDate(contractDetails.getEndDate());
         c.setRentAmount(contractDetails.getRentAmount());
+        c.setPaymentCycle(contractDetails.getPaymentCycle()); // apply cycle changes
         c.setPaymentMethod(contractDetails.getPaymentMethod());
         c.setBreachClause(contractDetails.getBreachClause());
         c.setStatus(contractDetails.getStatus());
