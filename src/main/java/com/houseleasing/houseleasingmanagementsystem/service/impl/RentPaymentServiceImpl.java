@@ -183,11 +183,21 @@ public class RentPaymentServiceImpl implements RentPaymentService {
         if (cycle == null) cycle = PaymentCycle.MONTHLY;
         int stepMonths;
         switch (cycle) {
-            case MONTHLY -> stepMonths = 1;
-            case QUARTERLY -> stepMonths = 3;
-            case HALF_YEARLY -> stepMonths = 6;
-            case YEARLY -> stepMonths = 12;
-            default -> stepMonths = 1;
+            case MONTHLY:
+                stepMonths = 1;
+                break;
+            case QUARTERLY:
+                stepMonths = 3;
+                break;
+            case HALF_YEARLY:
+                stepMonths = 6;
+                break;
+            case YEARLY:
+                stepMonths = 12;
+                break;
+            default:
+                stepMonths = 1;
+                break;
         }
         boolean first = true;
         while (!cursor.isAfter(end)) {

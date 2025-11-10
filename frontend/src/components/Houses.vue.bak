@@ -1,0 +1,98 @@
+<template>
+  <div>
+    <div class="d-flex align-items-center mb-3">
+      <div class="me-3">
+        <img src="@/assets/house-icon.png" alt="房源" class="house-icon" />
+        房源管理
+      </div>
+      <router-link class="btn btn-success" to="/houses/add">新增房源</router-link>
+    </div>
+
+    <div class="mb-4">
+      <div class="input-group" style="max-width: 400px;">
+        <input 
+          v-model="q" 
+          class="form-control" 
+          placeholder="搜索地址或户型" 
+          @keyup.enter="fetchHouses"
+        />
+        <button class="btn btn-outline-secondary" @click="fetchHouses">查询</button>
+      </div>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>地址</th>
+            <th>户型</th>
+            <th>面积</th>
+            <th>租金</th>
+            <th>装修</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="h in houses" :key="h.id">
+            <td>{{ h.address }}</td>
+            <td>{{ h.type }}</td>
+            <td>{{ h.area }} m²</td>
+            <td>¥{{ h.rent }}/月</td>
+            <td>{{ h.decoration }}</td>
+            <td>
+              <router-link :to="`/houses/edit/${h.id}`" class="btn btn-sm btn-warning me-1">编辑</router-link>
+              <button class="btn btn-sm btn-danger" @click="deleteHouse(h.id)">删除</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div v-if="houses.length === 0" class="text-muted text-center py-4">
+        无数据或请先登录
+      </div>
+    </div>
+  </div>
+</template>
+
+    <div v-if="houses.length===0" class="text-muted">无数据或请先登录。</div>
+  </div>
+</template>
+
+<script setup>
+import { ref, onMounted } from 'vue'
+import { get, del } from '@/utils/api'
+import { useRouter } from 'vue-router'
+
+const houses = ref([])
+const q = ref('')
+const router = useRouter()
+
+async function fetchHouses() {
+  try {
+    const query = q.value ? `?address=${encodeURIComponent(q.value)}&page=0&size=20` : '?page=0&size=20'
+    const res = await get(`/houses/search${query}`)
+    houses.value = res.content || []
+  } catch (e) {
+    console.error('获取房源失败', e)
+    houses.value = []
+  }
+}
+
+async function deleteHouse(id) {
+  if (!confirm('确认删除该房源？')) return
+  try {
+    await del(`/houses/${id}`)
+    await fetchHouses()
+  } catch (e) {
+    console.error('删除失败', e)
+    alert('删除失败：' + (e.message || '请检查控制台'))
+  }
+}
+
+onMounted(() => {
+  fetchHouses()
+})
+</script>
+
+<style scoped>
+.me-2 { margin-right: .5rem }
+</style>
