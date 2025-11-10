@@ -85,8 +85,34 @@ const q = ref('')
 // renamed to avoid colliding with the global fetch and to be clearer
 async function loadItems() {
   try {
-    const query = q.value ? `?contractId=${encodeURIComponent(q.value)}&page=0&size=20` : '?page=0&size=20'
-    const res = await get(`/rent-payments/search${query}`)
+    const baseQuery = '?page=0&size=20'
+    // try directly searching by contractId (if user entered a numeric id)
+    if (q.value) {
+      const maybeNum = Number(q.value)
+      if (Number.isFinite(maybeNum) && maybeNum > 0) {
+        const res = await get(`/rent-payments/search?contractId=${maybeNum}&page=0&size=20`)
+        items.value = res.content || []
+        // if we found results, return early
+        if ((items.value || []).length > 0) return
+      }
+
+      // fallback: try search contract by contractNo, then query rent-payments by contract id
+      try {
+        const cRes = await get(`/contracts/search?contractNo=${encodeURIComponent(q.value)}&page=0&size=20`)
+        const contracts = cRes.content || []
+        if (contracts.length > 0) {
+          const contractId = contracts[0].id
+          const rpRes = await get(`/rent-payments/search?contractId=${contractId}&page=0&size=20`)
+          items.value = rpRes.content || []
+          return
+        }
+      } catch (e) {
+        // ignore contract search errors and fall through to default listing
+        console.warn('合同搜索回退失败', e)
+      }
+    }
+
+    const res = await get(`/rent-payments/search${baseQuery}`)
     items.value = res.content || []
   } catch (e) {
     console.error('获取租金记录失败', e)
