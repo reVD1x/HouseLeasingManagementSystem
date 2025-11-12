@@ -35,6 +35,7 @@ public class MaintenanceRequest {
     private Double cost;             // 维修费用
 
     @Enumerated(EnumType.STRING)
+    @Column(length = 20)
     private MaintenanceStatus status; // 状态(待处理、处理中、已完成)
 
     @CreatedDate
