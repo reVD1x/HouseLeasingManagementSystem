@@ -91,4 +91,22 @@ public class UserController {
         }
         return ResponseEntity.notFound().build();
     }
+
+    // 分页模糊查询（按姓名关键字）
+    @GetMapping("/search")
+    public ResponseEntity<Page<User>> searchByRealName(
+            @RequestParam(required = false) String realName,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<User> users = userService.searchByRealName(realName, pageable);
+        return ResponseEntity.ok(users);
+    }
+
+    // 直接返回 List<User> 的模糊查询（兼容旧前端调用）
+    @GetMapping("/search-raw")
+    public ResponseEntity<List<User>> searchByRealNameRaw(@RequestParam String realName) {
+        List<User> users = userService.getByRealName(realName);
+        return ResponseEntity.ok(users);
+    }
 }

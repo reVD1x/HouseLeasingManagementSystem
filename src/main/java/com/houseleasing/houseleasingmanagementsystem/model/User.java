@@ -29,4 +29,7 @@ public class User {
 
     @CreatedDate
     private LocalDateTime createdAt;
+
+    // add a simple role field for system management
+    private String role;
 }

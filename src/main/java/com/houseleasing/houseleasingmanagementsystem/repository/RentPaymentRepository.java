@@ -22,6 +22,12 @@ public interface RentPaymentRepository extends JpaRepository<RentPayment, Long>,
     @Query("select rp from RentPayment rp join rp.contract c where c.id = :contractId")
     Page<RentPayment> findByContractId(@Param("contractId") Long contractId, Pageable pageable);
 
+    // Use nested property path to check existence by associated contract's id
+    boolean existsByContract_Id(Long contractId);
+
+    // Check if a rent payment already exists for a contract on a specific due date
+    boolean existsByContract_IdAndDueDate(Long contractId, java.time.LocalDate dueDate);
+
     List<RentPayment> findByDueDateBetween(LocalDate from, LocalDate to);
 
     List<RentPayment> findByStatusAndDueDateBefore(PaymentStatus status, LocalDate date);

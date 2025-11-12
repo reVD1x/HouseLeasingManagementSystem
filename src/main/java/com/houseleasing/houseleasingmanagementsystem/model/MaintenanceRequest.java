@@ -6,7 +6,6 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.Hibernate;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -43,17 +42,23 @@ public class MaintenanceRequest {
 
     private LocalDateTime completedAt; // 完成时间
 
+    // 新增字段：提交者姓名与联系电话
+    @Column(length = 100)
+    private String requesterName;
+
+    @Column(length = 50)
+    private String contact;
+
     // 仅用于序列化输出的便捷字段
     @Transient
     @JsonProperty("houseId")
     public Long getHouseId() {
-        return (house != null && Hibernate.isInitialized(house)) ? house.getId() : null;
+        return house != null ? house.getId() : null;
     }
 
     @Transient
     @JsonProperty("houseAddress")
     public String getHouseAddress() {
-        return (house != null && Hibernate.isInitialized(house)) ? house.getAddress() : null;
+        return house != null ? house.getAddress() : null;
     }
 }
-

@@ -177,6 +177,11 @@ public class RentPaymentServiceImpl implements RentPaymentService {
     @Transactional
     public void generateScheduleForContract(Contract contract, boolean markFirstPaid) {
         if (contract == null || contract.getId() == null) return;
+        // 防止重复生成：若已存在租金记录则跳过生成
+        if (rentPaymentRepository.existsByContract_Id(contract.getId())) {
+            // already generated; do nothing
+            return;
+        }
         LocalDate cursor = contract.getStartDate();
         LocalDate end = contract.getEndDate();
         PaymentCycle cycle = contract.getPaymentCycle();
@@ -205,6 +210,13 @@ public class RentPaymentServiceImpl implements RentPaymentService {
             LocalDate dueDate = cursor; // 可以根据业务改为 periodStart 或期末
             LocalDate periodEnd = periodStart.plusMonths(stepMonths).minusDays(1);
             if (periodEnd.isAfter(end)) periodEnd = end;
+
+            // Skip creation if a rent payment with same contract and dueDate already exists
+            if (rentPaymentRepository.existsByContract_IdAndDueDate(contract.getId(), dueDate)) {
+                cursor = periodStart.plusMonths(stepMonths);
+                first = false;
+                continue;
+            }
 
             RentPayment rp = new RentPayment();
             rp.setContract(contract);

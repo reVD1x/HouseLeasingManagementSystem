@@ -32,4 +32,7 @@ public interface ContractRepository extends JpaRepository<Contract, Long>, JpaSp
             "and CURRENT_DATE between c.startDate and c.endDate " +
             "order by c.startDate desc")
     Optional<Contract> findActiveContractByHouseId(@Param("houseId") Long houseId);
+
+    // count contracts by status (used by stats controller)
+    long countByStatus(ContractStatus status);
 }

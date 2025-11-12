@@ -35,8 +35,8 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
         String path = request.getRequestURI();
 
-        // 允许登录接口和验证接口不需要token
-        if (path.equals("/api/auth/login") || path.equals("/api/auth/validate")) {
+        // 允许登录接口、验证接口以及统计概览接口不需要token
+        if (path.equals("/api/auth/login") || path.equals("/api/auth/validate") || path.startsWith("/api/stats")) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -73,4 +73,3 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
         response.getWriter().write(mapper.writeValueAsString(errorResponse));
     }
 }
-

@@ -42,7 +42,15 @@ public class MaintenanceRequestServiceImpl implements MaintenanceRequestService 
     @Override
     @Transactional(readOnly = true)
     public Page<MaintenanceRequest> getAllMaintenanceRequests(Pageable pageable) {
-        return maintenanceRequestRepository.findAllWithHouse(pageable);
+        Page<MaintenanceRequest> page = maintenanceRequestRepository.findAllWithHouse(pageable);
+        // force initialize transient getters for serialization
+        page.getContent().forEach(m -> {
+            if (m.getHouse() != null) {
+                m.getHouseAddress();
+                m.getHouseId();
+            }
+        });
+        return page;
     }
 
     @Override
@@ -54,7 +62,9 @@ public class MaintenanceRequestServiceImpl implements MaintenanceRequestService 
     @Override
     @Transactional(readOnly = true)
     public Page<MaintenanceRequest> getMaintenanceRequestsByStatus(MaintenanceStatus status, Pageable pageable) {
-        return maintenanceRequestRepository.findByStatusWithHouse(status, pageable);
+        Page<MaintenanceRequest> page = maintenanceRequestRepository.findByStatusWithHouse(status, pageable);
+        page.getContent().forEach(m -> { if (m.getHouse() != null) { m.getHouseAddress(); m.getHouseId(); } });
+        return page;
     }
 
     @Override
@@ -107,7 +117,10 @@ public class MaintenanceRequestServiceImpl implements MaintenanceRequestService 
             return cb.and(predicates.toArray(new Predicate[0]));
         };
 
-        return maintenanceRequestRepository.findAll(spec, pageable);
+        Page<MaintenanceRequest> page = maintenanceRequestRepository.findAll(spec, pageable);
+        // force initialize transient getters for serialization when repository query didn't fetch house
+        page.getContent().forEach(m -> { if (m.getHouse() != null) { m.getHouseAddress(); m.getHouseId(); } });
+        return page;
     }
 
     @Override

@@ -34,5 +34,8 @@ public class MaintenanceRequestDTO {
     private LocalDateTime createdAt;
 
     private LocalDateTime completedAt;
-}
 
+    // 新增提交者姓名与联系电话字段
+    private String requesterName;
+    private String contact;
+}

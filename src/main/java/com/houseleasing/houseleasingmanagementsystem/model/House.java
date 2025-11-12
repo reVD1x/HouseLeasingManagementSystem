@@ -10,6 +10,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.hibernate.Hibernate;
 
 import java.time.LocalDateTime;
 
@@ -37,7 +38,7 @@ public class House {
     private String decoration;       // 装修情况
 
     @Column(length = 1000)
-    private String facilities;       // 配套设施
+    private String facilities;      // 配套设施
 
     @Enumerated(EnumType.STRING)
     private HouseStatus status;      // 状态(可租、已租)
@@ -62,12 +63,12 @@ public class House {
     @Transient
     @JsonProperty("landlordId")
     public Long getLandlordId() {
-        return landlord != null ? landlord.getId() : null;
+        return (landlord != null && Hibernate.isInitialized(landlord)) ? landlord.getId() : null;
     }
 
     @Transient
     @JsonProperty("landlordName")
     public String getLandlordName() {
-        return landlord != null ? landlord.getRealName() : null;
+        return (landlord != null && Hibernate.isInitialized(landlord)) ? landlord.getRealName() : null;
     }
 }

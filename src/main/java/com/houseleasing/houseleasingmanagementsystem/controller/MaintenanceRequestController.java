@@ -22,10 +22,14 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @RestController
 @RequestMapping("/api/maintenance-requests")
 public class MaintenanceRequestController {
+
+    private static final Logger logger = LoggerFactory.getLogger(MaintenanceRequestController.class);
 
     @Autowired
     private MaintenanceRequestService maintenanceRequestService;
@@ -44,6 +48,9 @@ public class MaintenanceRequestController {
         request.setCost(dto.getCost());
         request.setStatus(dto.getStatus());
         request.setCompletedAt(dto.getCompletedAt());
+        // 从 DTO 复制提交者信息
+        request.setRequesterName(dto.getRequesterName());
+        request.setContact(dto.getContact());
         return request;
     }
 
@@ -62,10 +69,13 @@ public class MaintenanceRequestController {
             return ResponseEntity.badRequest().body("指定的房源不存在: " + dto.getHouseId());
         }
 
-        // 从房源的有效合同中获取租客信息
+        // 从房源的有效合同中获取租客信息；如果没有活跃合同，不再拒绝请求，而是允许提交并记录警告
         Optional<Contract> activeContract = contractRepository.findActiveContractByHouseId(dto.getHouseId());
         if (activeContract.isEmpty()) {
-            return ResponseEntity.badRequest().body("该房源没有有效的租赁合同或不在生效时间，无法提交维修申请");
+            logger.warn("提交维修：房源 {} 没有有效的租赁合同或不在生效时间，仍允许提交维修申请（由前端提交者信息填充）", dto.getHouseId());
+        } else {
+            // 若需要可以在此使用 activeContract 的租客信息覆盖 DTO 中的提交者信息
+            // e.g. request.setRequesterName(...)
         }
 
         MaintenanceRequest request = convertToEntity(dto);
@@ -276,4 +286,3 @@ public class MaintenanceRequestController {
         return ResponseEntity.ok(statistics);
     }
 }
-

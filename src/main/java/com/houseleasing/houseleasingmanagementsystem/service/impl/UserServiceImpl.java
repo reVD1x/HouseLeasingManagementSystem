@@ -52,7 +52,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> getByRealName(String realName) {
-        return userRepository.findByRealName(realName);
+        // 使用部分匹配并忽略大小写，便于前端按关键字搜索
+        return userRepository.findByRealNameContainingIgnoreCase(realName);
+    }
+
+    @Override
+    public Page<User> searchByRealName(String realName, Pageable pageable) {
+        if (realName == null || realName.isBlank()) {
+            return userRepository.findAll(pageable);
+        }
+        return userRepository.findByRealNameContainingIgnoreCase(realName, pageable);
     }
 
     @Override

@@ -33,8 +33,8 @@ public class ContractServiceImpl implements ContractService {
             contract.setStatus(ContractStatus.DRAFT);
         }
         Contract saved = contractRepository.save(contract);
-        // 生成租金计划，第一期设为已付款（根据你的描述）
-        rentPaymentService.generateScheduleForContract(saved, true);
+        // 生成租金计划，默认不把第一期标为已付款（新合同默认未缴费）
+        rentPaymentService.generateScheduleForContract(saved, false);
         return getContractById(saved.getId());
     }
 

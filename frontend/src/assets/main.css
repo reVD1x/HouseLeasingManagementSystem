@@ -2,9 +2,22 @@
 
 #app {
   max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+  margin: 0;
+  padding: 1rem 1rem 2rem 1rem;
   font-weight: normal;
+}
+
+/* app-container: consistent layout container that aligns to top-left
+   - max-width matches #app for consistency
+   - width:100% so it shrinks on small viewports
+   - zero horizontal auto margins so it won't center
+*/
+.app-container {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0;
+  padding: 0 1rem;
+  box-sizing: border-box;
 }
 
 a,
@@ -23,13 +36,14 @@ a,
 
 @media (min-width: 1024px) {
   body {
-    display: flex;
-    place-items: center;
+    display: block;
   }
 
   #app {
     display: grid;
     grid-template-columns: 1fr 1fr;
     padding: 0 2rem;
+    margin: 0;
+    align-items: start;
   }
 }

@@ -20,5 +20,8 @@ public interface UserService {
     // 精确根据真实姓名查询
     List<User> getByRealName(String realName);
 
+    // 分页模糊查询（按姓名关键字）
+    Page<User> searchByRealName(String realName, Pageable pageable);
+
     User getByIdCard(String idCard);
 }

@@ -110,5 +110,7 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
 
     // 查询合同相关的所有评价
     List<Review> findByContract_Id(Long contractId);
-}
 
+    // 查询最新 5 条评价（用于统计面板）
+    List<Review> findTop5ByOrderByCreatedAtDesc();
+}
